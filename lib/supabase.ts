@@ -1,6 +1,4 @@
-import { createClientComponentClient, createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { createClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
+import { createBrowserClient as createSupabaseBrowserClient } from '@supabase/ssr'
 
 export type Profile = {
   id: string
@@ -38,19 +36,11 @@ export type Message = {
   read_at: string | null
 }
 
-// Browser client (for Client Components)
-export const createBrowserClient = () =>
-  createClientComponentClient<{ profiles: Profile; chats: Chat; messages: Message }>()
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-// Server client (for Server Components / Route Handlers)
-export const createServerClient = () =>
-  createServerComponentClient<{ profiles: Profile; chats: Chat; messages: Message }>({
-    cookies,
-  })
+// Browser client — for Client Components ('use client')
+export function createBrowserClient() {
+  return createSupabaseBrowserClient(supabaseUrl, supabaseAnonKey)
+}
 
-// Admin / service role client (for API routes that need elevated access)
-export const createAdminClient = () =>
-  createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
