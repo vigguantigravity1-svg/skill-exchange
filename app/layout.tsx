@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Skill Exchange — Trade Skills, Build Together',
   description: 'Connect with verified professionals and exchange skills. No money, just talent. Powered by AI trust verification.',
