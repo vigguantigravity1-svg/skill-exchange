@@ -1,9 +1,12 @@
 import OpenAI from 'openai'
 
-export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-
+let _openai: OpenAI | null = null
+export function getOpenAI(): OpenAI {
+  if (!_openai) {
+    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  }
+  return _openai
+}
 export async function analyzePortfolio({
   scrapedContent,
   role,
@@ -27,7 +30,7 @@ ${scrapedContent.slice(0, 6000)}
 Return ONLY valid JSON with no markdown or code fences, in exactly this format:
 {"score": <integer 0-100>, "reasoning": "<one sentence explanation>"}`
 
-  const response = await openai.chat.completions.create({
+  const response = await getOpenAI().chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
     temperature: 0.2,
